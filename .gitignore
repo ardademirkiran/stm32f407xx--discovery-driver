@@ -1,0 +1,26 @@
+# =========================
+# STM32CubeIDE / Eclipse
+# =========================
+.settings/
+*.launch
+
+# =========================
+# Build output
+# =========================
+Debug/
+Release/
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+*.o
+*.d
+
+# =========================
+# OS / Editor noise
+# =========================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
