@@ -7,8 +7,36 @@
 #include <stdint.h>
 
 
+
+
 #ifndef INC_STM32F407XX_H_
 #define INC_STM32F407XX_H_
+
+/*
+ * Processor Specific Details ARM-Cortex M4
+ */
+
+
+/*
+ * ARM Cortex M4 NVIC_ISERx register addresses
+ */
+#define NVIC_ISER0	((volatile uint32_t*) 0xE000E100)
+#define NVIC_ISER1	((volatile uint32_t*) (0xE000E100 + 0x04))
+#define NVIC_ISER2	((volatile uint32_t*) (0xE000E100 + 0x08))
+#define NVIC_ISER3	((volatile uint32_t*) (0xE000E100 + 0x0C))
+
+/*
+ * ARM Cortex M4 NVIC_ICERx register addresses
+ */
+#define NVIC_ICER0	((volatile uint32_t*) 0xE000E180)
+#define NVIC_ICER1	((volatile uint32_t*) (0xE000E180 + 0x04))
+#define NVIC_ICER2	((volatile uint32_t*) (0xE000E180 + 0x08))
+#define NVIC_ICER3	((volatile uint32_t*) (0xE000E180 + 0x0C))
+
+/*
+ * ARM Cortex M4 NVIC_IPR base address
+ */
+#define NVIC_IPR_BASEADDR	((volatile uint32_t*) 0xE000E400)
 
 /*
  * Base addresses of Flash and SRAM memories
@@ -199,6 +227,10 @@ typedef struct {
  */
 #define SPI1_PCLK_EN() ( RCC->APB2ENR |= ( 1 << 12 ) )
 
+/*
+ * Clock enable for SYSCFG
+ */
+#define SYSCFG_PCLK_EN() ( RCC->APB2ENR |= ( 1 << 14 ) )
 
 /*
  * Clock disable for GPIOx
@@ -236,6 +268,11 @@ typedef struct {
  */
 #define SPI1_PCLK_DI() ( RCC->APB2ENR &= ~( 1 << 12 ) )
 
+/*
+ * Clock disable for SYSCFG
+ */
+#define SYSCFG_PCLK_DI() ( RCC->APB2ENR &= ~( 1 << 14 ) )
+
 
 
 //generic macros
@@ -268,6 +305,50 @@ typedef struct {
 #define GPIOK_REG_RESET()	do{( RCC->AHB1RSTR |= ( 1 << 10 ) ); ( RCC->AHB1RSTR &= ~( 1 << 10 ) );} while(0)
 
 
+
+/*
+ * EXTI Register Definition and Memory Mapping
+ */
+typedef struct {
+	volatile uint32_t IMR;
+	volatile uint32_t EMR;
+	volatile uint32_t RTSR;
+	volatile uint32_t FTSR;
+	volatile uint32_t SWIER;
+	volatile uint32_t PR;
+} EXTI_RegDef_t;
+
+#define EXTI ((EXTI_RegDef_t*) EXTI_BASE_ADDR)
+
+/*
+ * SYSCFG Register Definition and Memory Mapping
+ */
+typedef struct {
+	volatile uint32_t MEMRMP;
+	volatile uint32_t PMC;
+	volatile uint32_t EXTICR[4];
+	volatile uint32_t CMPCR;
+} SYSCFG_RegDef_t;
+
+#define SYSCFG ((SYSCFG_RegDef_t*) SYSCFG_BASE_ADDR)
+
+#define GPIO_BASEADDR_TO_CODE(x) (((uint32_t)(x) - AHB1_BASE_ADDR) / 0x400)
+
+
+/*
+ * EXTIx to IRQ Numbers
+ */
+#define EXTI0_IRQn                  6   // EXTI Line0 Interrupt
+#define EXTI1_IRQn                  7   // EXTI Line1 Interrupt
+#define EXTI2_IRQn                  8   // EXTI Line2 Interrupt
+#define EXTI3_IRQn                  9   // EXTI Line3 Interrupt
+#define EXTI4_IRQn                  10  // EXTI Line4 Interrupt
+#define EXTI9_5_IRQn                23  // External Line[9:5] Interrupts
+#define EXTI15_10_IRQn              40  // External Line[15:10] Interrupts
+
+
+
+#define NO_PR_BITS_IMPLEMENTED	4
 
 
 
