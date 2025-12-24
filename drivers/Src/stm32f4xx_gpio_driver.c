@@ -181,20 +181,20 @@ void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnOrDi) {
 		}
 	} else {
 		if(IRQNumber <= 31) {
-			//Configure NVIC_ISER0 register
+			//Configure NVIC_ICER0 register
 			*NVIC_ICER0 |= (1 << IRQNumber);
 		} else if(IRQNumber < 64){
-			//Confiugre NVIC_ISER1 register
+			//Confiugre NVIC_ICER1 register
 			*NVIC_ICER1 |= (1 << (IRQNumber % 32));
 		} else if(IRQNumber < 96) {
-			//Configure  NVIC_ISER2 register
+			//Configure  NVIC_ICER2 register
 			*NVIC_ICER3 |= (1 << (IRQNumber % 64));
 		}
 	}
 }
 
 
-void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority) {
+void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority) {
 	uint8_t iprx = (uint8_t) (IRQNumber  / 4);
 	uint8_t prix = IRQNumber % 4;
 	uint8_t shift = (8 * prix) + (8 - NO_PR_BITS_IMPLEMENTED);
@@ -203,7 +203,10 @@ void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority) {
 
 void GPIO_IRQHandling(uint8_t pinNumber)
 {
-
+	//Clear the EXTI PR register, corresponding to the pin number
+	if(EXTI->PR & (1 << pinNumber)) {
+		EXTI->PR = (1 << pinNumber);
+	}
 }
 
 
