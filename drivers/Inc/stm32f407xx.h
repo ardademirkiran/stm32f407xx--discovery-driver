@@ -226,6 +226,8 @@ typedef struct {
  * Clock enable for SPIx
  */
 #define SPI1_PCLK_EN() ( RCC->APB2ENR |= ( 1 << 12 ) )
+#define SPI2_PCLK_EN() ( RCC->APB1ENR |= ( 1 << 14 ) )
+#define SPI3_PCLK_EN() ( RCC->APB1ENR |= ( 1 << 15 ) )
 
 /*
  * Clock enable for SYSCFG
@@ -267,6 +269,9 @@ typedef struct {
  * Clock disable for SPIx
  */
 #define SPI1_PCLK_DI() ( RCC->APB2ENR &= ~( 1 << 12 ) )
+#define SPI2_PCLK_DI() ( RCC->APB1ENR &= ~( 1 << 14 ) )
+#define SPI3_PCLK_DI() ( RCC->APB1ENR &= ~( 1 << 15 ) )
+
 
 /*
  * Clock disable for SYSCFG
@@ -349,6 +354,34 @@ typedef struct {
 
 
 #define NO_PR_BITS_IMPLEMENTED	4
+
+
+/*
+ * SPI Register Definition
+ */
+
+typedef struct {
+volatile uint32_t SPI_CR1;
+volatile uint32_t SPI_CR2;
+volatile uint32_t SPI_SR;
+volatile uint32_t SPI_DR;
+volatile uint32_t SPI_CRCPR;
+volatile uint32_t SPI_RXCRCR;
+volatile uint32_t SPI_TXCRCR;
+volatile uint32_t SPI_I2SCFGR;
+volatile uint32_t SPI_I2SPR;
+} SPI_RegDef_t;
+
+
+/*
+ * SPI Peripheral definition
+ */
+
+#define SPI1 ((SPI_RegDef_t*) SPI1_BASE_ADDR)
+#define SPI2 ((SPI_RegDef_t*) SPI2_BASE_ADDR)
+#define SPI3 ((SPI_RegDef_t*) SPI3_BASE_ADDR)
+
+
 
 
 
