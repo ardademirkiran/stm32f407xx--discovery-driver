@@ -1,5 +1,5 @@
 /*
- * 004_spi_tx_testing.c
+ * 005_spi_comm_to_arduino.c
  *
  *  Created on: Dec 27, 2025
  *      Author: ardademirkran
@@ -16,6 +16,11 @@
  * PB12 --> SPI2_NSS
  * ALT function mode : 5
  */
+
+void delay(void) {
+
+	for (uint32_t i = 0; i < 500000/2; i++);
+}
 
 
 void SPI2_GPIOInits(void){
@@ -40,8 +45,6 @@ void SPI2_GPIOInits(void){
 	SPIPins.GPIO_PinConfig.GPIO_PinNumber = 15;
 	GPIO_Init(&SPIPins);
 
-	//NSS
-	SPIPins.GPIO_PinConfig.GPIO_PinNumber = 12;
 	GPIO_Init(&SPIPins);
 }
 
@@ -61,26 +64,43 @@ void SPI2_Inits(void){
 	SPI_Init(&SPI2Handle);
 }
 
+void GPIO_ButtonInit(){
+	GPIO_Handle_t buttonHandle;
+	buttonHandle.pGPIOx = GPIOA;
+	buttonHandle.GPIO_PinConfig.GPIO_PinNumber = 0;
+	buttonHandle.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IN;
+	buttonHandle.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
+	buttonHandle.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
+
+	GPIO_PeriClockControl(GPIOA, ENABLE);
+
+	GPIO_Init(&buttonHandle);
+}
+
 int main(void) {
 
 	char userData[]  = "Hello World";
-	uint8_t dataLen = strlen(userData);
+
+	GPIO_ButtonInit();
+
 
 	SPI2_GPIOInits();
 	SPI2_Inits();
 
+	SPI_SSOEConfig(SPI2, ENABLE);
+
+	while(!GPIO_ReadFromInputPin(GPIOA, 0));
+
+	delay();
+
 	// This must be done last
 	SPI_PeripheralControl(SPI2, ENABLE);
 
-	SPI_SendData(SPI2, &dataLen, 1);
-
-
-	SPI_SendData(SPI2, (uint8_t*)userData, dataLen);
+	SPI_SendData(SPI2, (uint8_t*)userData, strlen(userData));
 
 	while(SPI_GetFlagStatus(SPI2, (1 << 7)));
 
 	SPI_PeripheralControl(SPI2, DISABLE);
-
 	return 0;
 }
 

@@ -36,7 +36,7 @@ void GPIO_DeInit(GPIO_Handle_t *pGPIOHandle);
 
 
 
-uint8_t GPIO_ReadFromInputPin(GPIO_Handle_t *pGPIOx, uint8_t pinNumber);
+uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber);
 uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx);
 void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber, uint8_t value);
 void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t value);

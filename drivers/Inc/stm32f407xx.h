@@ -5,12 +5,15 @@
  *      Author: ardademirkran
  */
 #include <stdint.h>
+#include <stddef.h>
 
 
 
 
 #ifndef INC_STM32F407XX_H_
 #define INC_STM32F407XX_H_
+
+#define __weak __attribute__((weak))
 
 /*
  * Processor Specific Details ARM-Cortex M4
@@ -348,8 +351,13 @@ typedef struct {
 #define EXTI2_IRQn                  8   // EXTI Line2 Interrupt
 #define EXTI3_IRQn                  9   // EXTI Line3 Interrupt
 #define EXTI4_IRQn                  10  // EXTI Line4 Interrupt
-#define EXTI9_5_IRQn                23  // External Line[9:5] Interrupts
-#define EXTI15_10_IRQn              40  // External Line[15:10] Interrupts
+#define EXTI9_5_IRQn                23  // EXTI Line[9:5] Interrupts
+#define EXTI15_10_IRQn              40  // EXTI Line[15:10] Interrupts
+#define SPI1_IRQn					35	// SPI1 Interrupt
+#define SPI2_IRQn					36 	// SPI2 Interrupt
+#define SPI3_IRQn					51 	// SPI2 Interrupt
+
+
 
 
 

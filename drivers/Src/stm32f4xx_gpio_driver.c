@@ -124,10 +124,10 @@ void GPIO_DeInit(GPIO_Handle_t *pGPIOHandle)
 
 
 
-uint8_t GPIO_ReadFromInputPin(GPIO_Handle_t *pGPIOx, uint8_t pinNumber)
+uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber)
 {
 	uint8_t value;
-	value = (uint8_t) ((pGPIOx->pGPIOx->IDR >> pinNumber) & 0x00000001);
+	value = (uint8_t) ((pGPIOx->IDR >> pinNumber) & 0x00000001);
 
 	return value;
 
