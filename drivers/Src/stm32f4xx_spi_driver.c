@@ -142,7 +142,7 @@ void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnOrDi){
 			*NVIC_ISER1 |= (1 << (IRQNumber % 32));
 		} else if(IRQNumber < 96) {
 			//Configure  NVIC_ISER2 register
-			*NVIC_ISER3 |= (1 << (IRQNumber % 64));
+			*NVIC_ISER2 |= (1 << (IRQNumber % 64));
 		}
 	} else {
 		if(IRQNumber <= 31) {
@@ -153,7 +153,7 @@ void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnOrDi){
 			*NVIC_ICER1 |= (1 << (IRQNumber % 32));
 		} else if(IRQNumber < 96) {
 			//Configure  NVIC_ICER2 register
-			*NVIC_ICER3 |= (1 << (IRQNumber % 64));
+			*NVIC_ICER2 |= (1 << (IRQNumber % 64));
 		}
 	}
 }
@@ -275,8 +275,8 @@ void SPI_CloseTransmission(SPI_Handle_t *pSPIHandle)
 {
 	pSPIHandle->pSPIx->SPI_CR2 &= ~( 1 << 7);
 	pSPIHandle->pTxBuffer = NULL;
-	pSPIHandle->rxLen = 0;
-	pSPIHandle->rxState = 0;
+	pSPIHandle->txLen = 0;
+	pSPIHandle->txState = 0;
 
 }
 

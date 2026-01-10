@@ -13,7 +13,6 @@
  * PB14 --> SPI2_MISO
  * PB15 --> SPI2_MOSI
  * PB13 -> SPI2_SCLK
- * PB12 --> SPI2_NSS
  * ALT function mode : 5
  */
 
@@ -22,8 +21,26 @@ void delay(void) {
 	for (uint32_t i = 0; i < 500000/2; i++);
 }
 
+void SPI2_CS_GPIOInit(void)
+{
+    GPIO_Handle_t gpioCS;
+
+    GPIO_PeriClockControl(GPIOB, ENABLE);
+
+    gpioCS.pGPIOx = GPIOB;
+    gpioCS.GPIO_PinConfig.GPIO_PinNumber = 12;
+    gpioCS.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
+    gpioCS.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+    gpioCS.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
+    gpioCS.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
+
+    GPIO_Init(&gpioCS);
+}
+
 
 void SPI2_GPIOInits(void){
+	GPIO_PeriClockControl(GPIOB, ENABLE);
+
 	GPIO_Handle_t SPIPins;
 	SPIPins.pGPIOx = GPIOB;
 	SPIPins.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_ALTFN;
@@ -45,62 +62,39 @@ void SPI2_GPIOInits(void){
 	SPIPins.GPIO_PinConfig.GPIO_PinNumber = 15;
 	GPIO_Init(&SPIPins);
 
-	GPIO_Init(&SPIPins);
 }
 
 void SPI2_Inits(void){
-
 	SPI_Handle_t SPI2Handle;
 	SPI2Handle.pSPIx = SPI2;
 	SPI2Handle.SPIConfig.SPI_BusConfig = SPI_BUS_CONFIG_FD;
 	SPI2Handle.SPIConfig.SPI_DeviceMode = SPI_DEVICE_MODE_MASTER;
-	SPI2Handle.SPIConfig.SPI_SCLKSpeed = SPI_SCLK_SPEED_DIV2;
+	SPI2Handle.SPIConfig.SPI_SCLKSpeed = SPI_SCLK_SPEED_DIV32;
 	SPI2Handle.SPIConfig.SPI_DFF = SPI_DFF_8_BIT;
 	SPI2Handle.SPIConfig.SPI_CPHA = SPI_CPHA_LOW;
 	SPI2Handle.SPIConfig.SPI_CPOL = SPI_CPOL_LOW;
 	SPI2Handle.SPIConfig.SPI_SSM = SPI_SSM_ENABLED;
 
-
+	SPI_PeriClockControl(&SPI2Handle, ENABLE);
 	SPI_Init(&SPI2Handle);
 }
 
-void GPIO_ButtonInit(){
-	GPIO_Handle_t buttonHandle;
-	buttonHandle.pGPIOx = GPIOA;
-	buttonHandle.GPIO_PinConfig.GPIO_PinNumber = 0;
-	buttonHandle.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IN;
-	buttonHandle.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
-	buttonHandle.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_NO_PUPD;
-
-	GPIO_PeriClockControl(GPIOA, ENABLE);
-
-	GPIO_Init(&buttonHandle);
-}
-
 int main(void) {
-
-	char userData[]  = "Hello World";
-
-	GPIO_ButtonInit();
-
-
+	uint8_t userData[] = "Duygu pln   ";
 	SPI2_GPIOInits();
 	SPI2_Inits();
 
-	SPI_SSOEConfig(SPI2, ENABLE);
-
-	while(!GPIO_ReadFromInputPin(GPIOA, 0));
-
-	delay();
-
-	// This must be done last
+	SPI2_CS_GPIOInit();
 	SPI_PeripheralControl(SPI2, ENABLE);
+	GPIO_WriteToOutputPin(GPIOB, 12, 0);
+	SPI_SendData(SPI2, (uint8_t*)userData, strlen((char*)userData) + 1);
 
-	SPI_SendData(SPI2, (uint8_t*)userData, strlen(userData));
+	while (SPI2->SPI_SR & (1 << 7));
 
-	while(SPI_GetFlagStatus(SPI2, (1 << 7)));
+	GPIO_WriteToOutputPin(GPIOB, 12, 1);
 
 	SPI_PeripheralControl(SPI2, DISABLE);
+
 	return 0;
 }
 

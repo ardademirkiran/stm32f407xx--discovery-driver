@@ -151,7 +151,7 @@ void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber, uint8_t val
 	if(value == GPIO_PIN_SET) {
 		pGPIOx->ODR |= (1 << pinNumber);
 	} else {
-		pGPIOx->ODR |= ~(0 << pinNumber);
+		pGPIOx->ODR &= ~(1 << pinNumber);
 	}
 
 }
