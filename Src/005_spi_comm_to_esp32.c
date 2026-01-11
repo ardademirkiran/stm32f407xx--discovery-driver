@@ -9,17 +9,17 @@
 #include "stm32f4xx_spi_driver.h"
 #include "string.h"
 
+#define CS_PIN		12
+#define SCLK_PIN	13
+#define MISO_PIN	14
+#define MOSI_PIN	15
+
 /*
  * PB14 --> SPI2_MISO
  * PB15 --> SPI2_MOSI
  * PB13 -> SPI2_SCLK
  * ALT function mode : 5
  */
-
-void delay(void) {
-
-	for (uint32_t i = 0; i < 500000/2; i++);
-}
 
 void SPI2_CS_GPIOInit(void)
 {
@@ -28,7 +28,7 @@ void SPI2_CS_GPIOInit(void)
     GPIO_PeriClockControl(GPIOB, ENABLE);
 
     gpioCS.pGPIOx = GPIOB;
-    gpioCS.GPIO_PinConfig.GPIO_PinNumber = 12;
+    gpioCS.GPIO_PinConfig.GPIO_PinNumber = CS_PIN;
     gpioCS.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_OUT;
     gpioCS.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_PP;
     gpioCS.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_HIGH;
@@ -51,15 +51,15 @@ void SPI2_GPIOInits(void){
 
 
 	//SCLK
-	SPIPins.GPIO_PinConfig.GPIO_PinNumber = 13;
+	SPIPins.GPIO_PinConfig.GPIO_PinNumber = SCLK_PIN;
 	GPIO_Init(&SPIPins);
 
 	//MISO
-	SPIPins.GPIO_PinConfig.GPIO_PinNumber = 14;
+	SPIPins.GPIO_PinConfig.GPIO_PinNumber = MISO_PIN;
 	GPIO_Init(&SPIPins);
 
 	//MOSI
-	SPIPins.GPIO_PinConfig.GPIO_PinNumber = 15;
+	SPIPins.GPIO_PinConfig.GPIO_PinNumber = MOSI_PIN;
 	GPIO_Init(&SPIPins);
 
 }
@@ -80,18 +80,18 @@ void SPI2_Inits(void){
 }
 
 int main(void) {
-	uint8_t userData[] = "Duygu pln   ";
+	uint8_t userData[] = "Hello ESP!";
 	SPI2_GPIOInits();
 	SPI2_Inits();
 
 	SPI2_CS_GPIOInit();
 	SPI_PeripheralControl(SPI2, ENABLE);
-	GPIO_WriteToOutputPin(GPIOB, 12, 0);
-	SPI_SendData(SPI2, (uint8_t*)userData, strlen((char*)userData) + 1);
+	GPIO_WriteToOutputPin(GPIOB, SCLK_PIN, GPIO_PIN_RESET);
+	SPI_SendData(SPI2, (uint8_t*)userData, strlen((char*)userData));
 
-	while (SPI2->SPI_SR & (1 << 7));
+	while (SPI2->SPI_SR & (1 << SPI_SR_BSY_POS));
 
-	GPIO_WriteToOutputPin(GPIOB, 12, 1);
+	GPIO_WriteToOutputPin(GPIOB, SCLK_PIN, GPIO_PIN_SET);
 
 	SPI_PeripheralControl(SPI2, DISABLE);
 

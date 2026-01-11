@@ -86,6 +86,31 @@ typedef struct {
 #define SPI_EVENT_OVR_ERR    3
 #define SPI_EVENT_CRC_ERR    4
 
+#define SPI_SR_BSY_POS	7
+#define SPI_SR_TXE_POS	1
+#define SPI_SR_RXNE_POS	0
+#define SPI_SR_OVR_POS	6
+
+#define SPI_CR1_MSTR_POS		2
+#define SPI_CR1_BIDIMODE_POS	15
+#define SPI_CR1_RXONLY_POS		10
+#define SPI_CR1_BR_POS			3
+#define SPI_CR1_DFF_POS			11
+#define SPI_CR1_CPHA_POS		0
+#define SPI_CR1_CPOL_POS		1
+#define SPI_CR1_SSM_POS			9
+#define SPI_CR1_SSI_POS			8
+#define SPI_CR1_SPE_POS			6
+
+#define SPI_CR2_SSOE_POS		2
+#define SPI_CR2_TXEIE_POS		7
+#define SPI_CR2_RXNEIE_POS		6
+#define SPI_CR2_ERRIE_POS		5
+
+#define SPI_TX_RX_BUSY			1
+#define SPI_TX_RX_AVAILABLE		0
+
+
 
 // Supported API's
 
@@ -120,6 +145,7 @@ void SPI_CloseTransmisson(SPI_Handle_t *pSPIHandle);
 void SPI_CloseReception(SPI_Handle_t *pSPIHandle);
 
 void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle,uint8_t AppEv);
+
 
 
 
