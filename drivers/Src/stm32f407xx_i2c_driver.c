@@ -70,6 +70,9 @@ void I2C_Init(I2C_Handle_t *pI2CHandle){
 	uint32_t pclk1 = RCC_GetPCLK1Value();
 	uint32_t freq = pclk1 / 1000000;
 	uint32_t temp_register = 0;
+
+	I2C_PeriClockControl(pI2CHandle, ENABLE);
+
 	temp_register = pI2CHandle->I2C_Config.I2C_AckControl;
 	pI2CHandle->pI2Cx->CR1 |= (temp_register << CR1_BIT_ACK);
 
@@ -103,6 +106,16 @@ void I2C_Init(I2C_Handle_t *pI2CHandle){
 
 	pI2CHandle->pI2Cx->CCR &= ~(0xFFF << CCR_BIT_CCR);
 	pI2CHandle->pI2Cx->CCR |= (ccr_value << CCR_BIT_CCR);
+
+	temp_register = 0;
+
+	if (pI2CHandle->I2C_Config.I2C_SCLSpeed <= I2C_SCL_SPEED_SM) {
+		temp_register = freq + 1;
+	} else {
+		temp_register = ((freq * 3) / 10) + 1;
+	}
+
+	pI2CHandle->pI2Cx->TRISE = (temp_register & 0x3F);
 
 }
 
