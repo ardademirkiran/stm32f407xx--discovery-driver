@@ -391,6 +391,26 @@ volatile uint32_t SPI_I2SPR;
 
 
 
+typedef struct {
+	uint32_t CR1;
+	uint32_t CR2;
+	uint32_t OAR1;
+	uint32_t OAR2;
+	uint32_t DR;
+	uint32_t SR1;
+	uint32_t SR2;
+	uint32_t CCR;
+	uint32_t TRISE;
+	uint32_t FLTR;
+} I2C_RegDef_t;
+
+
+#define I2C1 ((I2C_RegDef_t *) I2C1_BASE_ADDR)
+#define I2C2 ((I2C_RegDef_t *) I2C2_BASE_ADDR)
+#define I2C3 ((I2C_RegDef_t *) I2C3_BASE_ADDR)
+
+
+
 
 
 
@@ -403,6 +423,7 @@ volatile uint32_t SPI_I2SPR;
 
 
 #include "stm32f4xx_gpio_driver.h"
+#include "stm32f407x_i2c_driver.h"
 
 
 

@@ -83,7 +83,7 @@ void SPI2_Inits(void){
 }
 
 int main(void) {
-	uint8_t userData[] = "Hello ESP!";
+	uint8_t userData[] = "Hello ESP!    ";
 	SPI2_GPIOInits();
 	SPI2_Inits();
 	SPI_IRQInterruptConfig(SPI2_IRQn, ENABLE);
